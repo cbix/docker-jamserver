@@ -1,0 +1,13 @@
+# Copy this file to compose.override.yml and customize it as needed.
+services:
+  jamulus:
+    # These variables refer to flags described on
+    # https://jamulus.io/wiki/Running-a-Server#server-mode-related-options
+    environment:
+      # use for registered servers
+      DIRECTORYADDRESS: "anygenre1.jamulus.io:22124"
+      SERVERINFO: "Docker Jamserver;London;UK"
+      # welcome message
+      WELCOMEMESSAGE: "Docker Jamserver | https://github.com/cbix/docker-jamserver"
+      # maximum number of channels (clients)
+      NUMCHANNELS: 10
