@@ -3,7 +3,17 @@ services:
     image: cbix/jamulus
     build:
       context: .
-      dockerfile: ./jamulus/Dockerfile
+      dockerfile: jamulus/Dockerfile
     ports:
       - "22124:22124/udp"
     restart: always
+  ninjam:
+    image: cbix/ninjam
+    build:
+      context: .
+      dockerfile: ninjam/Dockerfile
+    ports:
+      - "2049:2049"
+    restart: always
+    volumes:
+      - ./ninjam/ninjam.cfg:/etc/ninjam.cfg

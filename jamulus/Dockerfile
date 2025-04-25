@@ -2,7 +2,7 @@ FROM manjarolinux/build AS builder
 USER builder
 COPY --chown=builder archlinux-proaudio/packages/jamulus /builder/jamulus
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
-  MAKEFLAGS="-j4" makepkg -sD /builder/jamulus --noconfirm
+  cd /builder/jamulus && MAKEFLAGS="-j4" makepkg -s --noconfirm
 
 FROM manjarolinux/base
 RUN --mount=type=cache,target=/var/cache/pacman/pkg  \
