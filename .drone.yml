@@ -1,0 +1,49 @@
+---
+kind: pipeline
+type: docker
+name: docker-jamserver amd64
+
+platform:
+  os: linux
+  arch: amd64
+
+environment:
+  DOCKER_BUILDKIT: 1
+
+steps:
+  - name: Fetch submodules
+    image: alpine/git
+    commands:
+      - git submodule update --init --recursive
+  - name: Build cbix/jamulus
+    image: plugins/docker
+    depends_on:
+      - Fetch submodules
+    settings:
+      repo: cbix/jamulus
+      tags: latest
+      dockerfile: jamulus/Dockerfile
+      username: cbix
+      password:
+        from_secret: docker-pass
+  - name: Build cbix/ninjam
+    image: plugins/docker
+    depends_on:
+      - Fetch submodules
+    settings:
+      repo: cbix/ninjam
+      tags: latest
+      dockerfile: ninjam/Dockerfile
+      username: cbix
+      password:
+        from_secret: docker-pass
+
+trigger:
+  event:
+    - push
+    - cron
+  ref:
+    - refs/heads/master
+  cron:
+    - ""
+    - docker
