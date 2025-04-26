@@ -43,6 +43,7 @@ steps:
 trigger:
   event:
     - push
+    - pull_request
     - cron
   branch:
     - master
