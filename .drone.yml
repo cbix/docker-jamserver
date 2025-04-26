@@ -23,6 +23,7 @@ steps:
       repo: cbix/jamulus
       tags: latest
       dockerfile: jamulus/Dockerfile
+      dry_run: ${DRONE_PULL_REQUEST:+true}
       username: cbix
       password:
         from_secret: docker-pass
@@ -34,6 +35,7 @@ steps:
       repo: cbix/ninjam
       tags: latest
       dockerfile: ninjam/Dockerfile
+      dry_run: ${DRONE_PULL_REQUEST:+true}
       username: cbix
       password:
         from_secret: docker-pass
@@ -42,8 +44,8 @@ trigger:
   event:
     - push
     - cron
-  ref:
-    - refs/heads/master
+  branch:
+    - master
   cron:
     - ""
     - docker
