@@ -11,18 +11,34 @@ environment:
   DOCKER_BUILDKIT: 1
   MAKEFLAGS: "-j4"
 
+volumes:
+  - name: abuild
+    temp: {}
+
 steps:
   - name: Fetch submodules
     image: alpine/git
     commands:
       - git submodule update --init --recursive
-  - name: Build jamulus apk
+  - name: Generate abuild key
     image: alpinelinux/build-base
     depends_on:
       - Fetch submodules
     user: root
+    volumes:
+      - name: abuild
+        path: /root/.abuild
     commands:
       - abuild-keygen -nai
+  - name: Build jamulus apk
+    image: alpinelinux/build-base
+    depends_on:
+      - Generate abuild key
+    user: root
+    volumes:
+      - name: abuild
+        path: /root/.abuild
+    commands:
       - echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
       - apk update
       - cd apkbuilds/packages/jamulus
@@ -41,10 +57,12 @@ steps:
   - name: Build ninjam apk
     image: alpinelinux/build-base
     depends_on:
-      - Fetch submodules
+      - Generate abuild key
     user: root
+    volumes:
+      - name: abuild
+        path: /root/.abuild
     commands:
-      - abuild-keygen -nai
       - cd apkbuilds/packages/ninjam-server
       - abuild -FrP $${DRONE_WORKSPACE}/repo
   - name: Build cbix/ninjam
