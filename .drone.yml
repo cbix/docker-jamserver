@@ -12,10 +12,10 @@ environment:
   MAKEFLAGS: "-j4"
 
 steps:
-  #  - name: Fetch submodules
-  #    image: alpine/git
-  #    commands:
-  #      - git submodule update --init --recursive
+  - name: Fetch submodules
+    image: alpine/git
+    commands:
+      - git submodule update --init --recursive
   - name: Build ninjam apk
     image: alpinelinux/build-base
     environment:
