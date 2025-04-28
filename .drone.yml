@@ -16,8 +16,30 @@ steps:
     image: alpine/git
     commands:
       - git submodule update --init --recursive
+  - name: Build jamulus apk
+    image: alpinelinux/build-base
+    depends_on:
+      - Fetch submodules
+    user: root
+    commands:
+      - abuild-keygen -nai
+      - cd apkbuilds/packages/jamulus
+      - abuild -FrP $${DRONE_WORKSPACE}/repo
+  - name: Build cbix/jamulus
+    image: plugins/docker
+    depends_on:
+      - Build jamulus apk
+    settings:
+      repo: cbix/jamulus
+      tags: latest
+      dockerfile: jamulus/Dockerfile
+      username: cbix
+      password:
+        from_secret: docker-pass
   - name: Build ninjam apk
     image: alpinelinux/build-base
+    depends_on:
+      - Fetch submodules
     user: root
     commands:
       - abuild-keygen -nai
@@ -25,6 +47,8 @@ steps:
       - abuild -FrP $${DRONE_WORKSPACE}/repo
   - name: Build cbix/ninjam
     image: plugins/docker
+    depends_on:
+      - Build ninjam apk
     settings:
       repo: cbix/ninjam
       tags: latest
