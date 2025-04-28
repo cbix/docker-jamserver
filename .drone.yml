@@ -9,27 +9,23 @@ platform:
 
 environment:
   DOCKER_BUILDKIT: 1
+  MAKEFLAGS: "-j4"
 
 steps:
-  - name: Fetch submodules
-    image: alpine/git
+  #  - name: Fetch submodules
+  #    image: alpine/git
+  #    commands:
+  #      - git submodule update --init --recursive
+  - name: Build ninjam apk
+    image: alpinelinux/build-base
+    environment:
+      REPODEST: /repo
     commands:
-      - git submodule update --init --recursive
-  - name: Build cbix/jamulus
-    image: plugins/docker
-    depends_on:
-      - Fetch submodules
-    settings:
-      repo: cbix/jamulus
-      tags: latest
-      dockerfile: jamulus/Dockerfile
-      username: cbix
-      password:
-        from_secret: docker-pass
+      - abuild-keygen -nai
+      - cp -r apkbuilds/packages/ninjam-server ~/; cd ~/ninjam-server
+      - abuild -rP $${DRONE_WORKSPACE}/repo
   - name: Build cbix/ninjam
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest
@@ -41,9 +37,10 @@ steps:
 trigger:
   event:
     - push
+    - pull_request
     - cron
-  ref:
-    - refs/heads/master
+  branch:
+    - master
   cron:
     - ""
     - docker
