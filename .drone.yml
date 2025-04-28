@@ -35,9 +35,6 @@ steps:
       - find /repo/
   - name: Build cbix/ninjam
     image: plugins/docker
-    volumes:
-      - name: repo
-        path: /drone/repo
     settings:
       repo: cbix/ninjam
       tags: latest
