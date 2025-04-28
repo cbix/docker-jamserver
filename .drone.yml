@@ -33,22 +33,16 @@ steps:
       #- cp -r apkbuilds/packages/ninjam-server ~/; cd ~/ninjam-server
       - (cd apkbuilds/packages/ninjam-server; abuild -Fr)
       - find /repo/
-  - name: debug
-    image: alpine
-    volumes:
-      - name: repo
-        path: /drone/src/repo
-    commands:
-      - ls -la
   - name: Build cbix/ninjam
     image: plugins/docker
     volumes:
       - name: repo
-        path: /drone/src/repo
+        path: /drone/repo
     settings:
       repo: cbix/ninjam
       tags: latest
       dockerfile: ninjam/Dockerfile
+      context: /drone
       daemon_off: true
       username: cbix
       password:
