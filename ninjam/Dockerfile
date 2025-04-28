@@ -1,3 +1,3 @@
 FROM alpine
-RUN --mount=target=/mnt apk -X /mnt/repo add ninjam-server
+RUN --mount=source=./repo,target=/mnt/ find /mnt && apk -X /mnt add ninjam-server
 ENTRYPOINT ninjamsrv /etc/ninjam.cfg
