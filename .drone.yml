@@ -14,6 +14,8 @@ environment:
 volumes:
   - name: abuild
     temp: {}
+  - name: apk-keys
+    temp: {}
 
 steps:
   - name: Fetch submodules
@@ -28,6 +30,8 @@ steps:
     volumes:
       - name: abuild
         path: /root/.abuild
+      - name: apk-keys
+        path: /etc/apk/keys
     commands:
       - abuild-keygen -nai
   - name: Build jamulus apk
@@ -38,6 +42,8 @@ steps:
     volumes:
       - name: abuild
         path: /root/.abuild
+      - name: apk-keys
+        path: /etc/apk/keys
     commands:
       - echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
       - apk update
@@ -62,6 +68,8 @@ steps:
     volumes:
       - name: abuild
         path: /root/.abuild
+      - name: apk-keys
+        path: /etc/apk/keys
     commands:
       - cd apkbuilds/packages/ninjam-server
       - abuild -FrP $${DRONE_WORKSPACE}/repo
