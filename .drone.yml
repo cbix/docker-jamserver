@@ -43,7 +43,6 @@ steps:
       tags: latest
       dockerfile: ninjam/Dockerfile
       context: /drone
-      daemon_off: true
       username: cbix
       password:
         from_secret: docker-pass
