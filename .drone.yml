@@ -55,7 +55,7 @@ steps:
       - Build jamulus apk
     settings:
       repo: cbix/jamulus
-      tags: latest
+      tags: latest-amd64
       dockerfile: jamulus/Dockerfile
       username: cbix
       password:
@@ -79,7 +79,7 @@ steps:
       - Build ninjam apk
     settings:
       repo: cbix/ninjam
-      tags: latest
+      tags: latest-amd64
       dockerfile: ninjam/Dockerfile
       username: cbix
       password:
@@ -89,6 +89,152 @@ trigger:
   event:
     - push
     - pull_request
+    - cron
+  branch:
+    - master
+  cron:
+    - ""
+    - docker
+
+---
+kind: pipeline
+type: docker
+name: docker-jamserver arm64
+
+platform:
+  os: linux
+  arch: arm64
+
+environment:
+  DOCKER_BUILDKIT: 1
+  MAKEFLAGS: "-j4"
+
+volumes:
+  - name: abuild
+    temp: {}
+  - name: apk-keys
+    temp: {}
+
+steps:
+  - name: Fetch submodules
+    image: alpine/git
+    commands:
+      - git submodule update --init --recursive
+  - name: Generate abuild key
+    image: alpinelinux/build-base
+    depends_on:
+      - Fetch submodules
+    user: root
+    volumes:
+      - name: abuild
+        path: /root/.abuild
+      - name: apk-keys
+        path: /etc/apk/keys
+    commands:
+      - abuild-keygen -nai
+  - name: Build jamulus apk
+    image: alpinelinux/build-base
+    depends_on:
+      - Generate abuild key
+    user: root
+    volumes:
+      - name: abuild
+        path: /root/.abuild
+      - name: apk-keys
+        path: /etc/apk/keys
+    commands:
+      - echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+      - apk update
+      - cd apkbuilds/packages/jamulus
+      - abuild -FrP $${DRONE_WORKSPACE}/repo
+  - name: Build cbix/jamulus
+    image: plugins/docker
+    depends_on:
+      - Build jamulus apk
+    settings:
+      repo: cbix/jamulus
+      tags: latest-arm64
+      dockerfile: jamulus/Dockerfile
+      username: cbix
+      password:
+        from_secret: docker-pass
+  - name: Build ninjam apk
+    image: alpinelinux/build-base
+    depends_on:
+      - Generate abuild key
+    user: root
+    volumes:
+      - name: abuild
+        path: /root/.abuild
+      - name: apk-keys
+        path: /etc/apk/keys
+    commands:
+      - cd apkbuilds/packages/ninjam-server
+      - abuild -FrP $${DRONE_WORKSPACE}/repo
+  - name: Build cbix/ninjam
+    image: plugins/docker
+    depends_on:
+      - Build ninjam apk
+    settings:
+      repo: cbix/ninjam
+      tags: latest-arm64
+      dockerfile: ninjam/Dockerfile
+      username: cbix
+      password:
+        from_secret: docker-pass
+
+trigger:
+  event:
+    - push
+    - pull_request
+    - cron
+  branch:
+    - master
+  cron:
+    - ""
+    - docker
+
+---
+kind: pipeline
+type: docker
+name: docker-jamserver manifest
+
+clone:
+  disable: true
+
+depends_on:
+  - docker-jamserver amd64
+  - docker-jamserver arm64
+
+steps:
+  - name: cbix/jamulus manifest
+    image: plugins/manifest
+    settings:
+      target: cbix/jamulus
+      template: cbix/jamulus:latest-ARCH
+      platforms:
+        - linux/amd64
+        - linux/arm64
+      ignore_missing: true
+      username: cbix
+      password:
+        from_secret: docker-pass
+  - name: cbix/ninjam manifest
+    image: plugins/manifest
+    settings:
+      target: cbix/ninjam
+      template: cbix/ninjam:latest-ARCH
+      platforms:
+        - linux/amd64
+        - linux/arm64
+      ignore_missing: true
+      username: cbix
+      password:
+        from_secret: docker-pass
+
+trigger:
+  event:
+    - push
     - cron
   branch:
     - master
