@@ -22,7 +22,7 @@ steps:
     commands:
       - abuild-keygen -nai
       - cd apkbuilds/packages/ninjam-server
-      - abuild -FrP ${DRONE_WORKSPACE}/repo
+      - abuild -FrP $${DRONE_WORKSPACE}/repo
   - name: Build cbix/ninjam
     image: plugins/docker
     settings:
