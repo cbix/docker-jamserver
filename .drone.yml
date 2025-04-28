@@ -31,6 +31,7 @@ steps:
       - abuild-keygen -nai
       - cp -r apkbuilds/packages/ninjam-server ~/; cd ~/ninjam-server
       - abuild -r
+      - find /repo/
   - name: Build cbix/ninjam
     image: plugins/docker
     settings:
