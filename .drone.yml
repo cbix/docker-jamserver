@@ -23,6 +23,8 @@ steps:
     user: root
     commands:
       - abuild-keygen -nai
+      - echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+      - apk update
       - cd apkbuilds/packages/jamulus
       - abuild -FrP $${DRONE_WORKSPACE}/repo
   - name: Build cbix/jamulus
