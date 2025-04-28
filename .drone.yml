@@ -270,7 +270,7 @@ steps:
   - name: cbix/jamulus manifest
     image: plugins/manifest
     settings:
-      target: cbix/jamulus
+      target: cbix/jamulus:latest
       template: cbix/jamulus:latest-ARCH
       platforms:
         - linux/amd64
@@ -282,7 +282,7 @@ steps:
   - name: cbix/ninjam manifest
     image: plugins/manifest
     settings:
-      target: cbix/ninjam
+      target: cbix/ninjam:latest
       template: cbix/ninjam:latest-ARCH
       platforms:
         - linux/amd64

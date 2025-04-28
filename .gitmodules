@@ -1,6 +1,3 @@
-[submodule "archlinux-proaudio"]
-	path = archlinux-proaudio
-	url = https://github.com/osam-cologne/archlinux-proaudio
 [submodule "apkbuilds"]
 	path = apkbuilds
 	url = https://github.com/cbix/apkbuilds
