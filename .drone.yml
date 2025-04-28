@@ -24,14 +24,15 @@ steps:
     image: alpinelinux/build-base
     volumes:
       - name: repo
-        path: /tmp/repo
+        path: /repo
     environment:
-      REPODEST: /tmp/repo
+      REPODEST: /repo
+    user: root
     commands:
       - abuild-keygen -nai
-      - cp -r apkbuilds/packages/ninjam-server ~/; cd ~/ninjam-server
-      - abuild -r
-      - find /tmp/repo/
+      #- cp -r apkbuilds/packages/ninjam-server ~/; cd ~/ninjam-server
+      - (cd apkbuilds/packages/ninjam-server; abuild -Fr)
+      - find /repo/
   - name: Build cbix/ninjam
     image: plugins/docker
     volumes:
@@ -41,6 +42,7 @@ steps:
       repo: cbix/ninjam
       tags: latest
       dockerfile: ninjam/Dockerfile
+      daemon_off: true
       username: cbix
       password:
         from_secret: docker-pass
