@@ -11,6 +11,10 @@ environment:
   DOCKER_BUILDKIT: 1
   MAKEFLAGS: "-j4"
 
+volumes:
+  - name: repo
+    temp: {}
+
 steps:
   - name: Fetch submodules
     image: alpine/git
@@ -18,12 +22,15 @@ steps:
       - git submodule update --init --recursive
   - name: Build ninjam apk
     image: alpinelinux/build-base
+    volumes:
+      - name: repo
+        path: /repo
     environment:
       REPODEST: /repo
     commands:
       - abuild-keygen -nai
       - cp -r apkbuilds/packages/ninjam-server ~/; cd ~/ninjam-server
-      - abuild -rP $${DRONE_WORKSPACE}/repo
+      - abuild -r
   - name: Build cbix/ninjam
     image: plugins/docker
     settings:
