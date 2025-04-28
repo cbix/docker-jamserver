@@ -24,14 +24,14 @@ steps:
     image: alpinelinux/build-base
     volumes:
       - name: repo
-        path: /repo
+        path: /tmp/repo
     environment:
-      REPODEST: /repo
+      REPODEST: /tmp/repo
     commands:
       - abuild-keygen -nai
       - cp -r apkbuilds/packages/ninjam-server ~/; cd ~/ninjam-server
       - abuild -r
-      - find /repo/
+      - find /tmp/repo/
   - name: Build cbix/ninjam
     image: plugins/docker
     volumes:
