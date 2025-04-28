@@ -113,7 +113,7 @@ steps:
       dry_run: true
     when:
       event:
-        - pull-request
+        - pull_request
 
 trigger:
   event:
@@ -177,7 +177,7 @@ steps:
       - apk update
       - cd apkbuilds/packages/jamulus
       - abuild -FrP $${DRONE_WORKSPACE}/repo
-  - name: Build cbix/jamulus
+  - name: Build cbix/jamulus on push
     image: plugins/docker
     depends_on:
       - Build jamulus apk
@@ -188,6 +188,21 @@ steps:
       username: cbix
       password:
         from_secret: docker-pass
+    when:
+      event:
+        - push
+  - name: Build cbix/jamulus on PR
+    image: plugins/docker
+    depends_on:
+      - Build jamulus apk
+    settings:
+      repo: cbix/jamulus
+      tags: latest-arm64
+      dockerfile: jamulus/Dockerfile
+      dry_run: true
+    when:
+      event:
+        - pull_request
   - name: Build ninjam apk
     image: alpinelinux/build-base
     depends_on:
@@ -201,7 +216,7 @@ steps:
     commands:
       - cd apkbuilds/packages/ninjam-server
       - abuild -FrP $${DRONE_WORKSPACE}/repo
-  - name: Build cbix/ninjam
+  - name: Build cbix/ninjam on push
     image: plugins/docker
     depends_on:
       - Build ninjam apk
@@ -212,6 +227,21 @@ steps:
       username: cbix
       password:
         from_secret: docker-pass
+    when:
+      event:
+        - push
+  - name: Build cbix/ninjam on PR
+    image: plugins/docker
+    depends_on:
+      - Build ninjam apk
+    settings:
+      repo: cbix/ninjam
+      tags: latest-arm64
+      dockerfile: ninjam/Dockerfile
+      dry_run: true
+    when:
+      event:
+        - pull_request
 
 trigger:
   event:
