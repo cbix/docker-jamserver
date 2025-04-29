@@ -9,50 +9,16 @@ platform:
 
 environment:
   DOCKER_BUILDKIT: 1
-  MAKEFLAGS: "-j4"
-
-volumes:
-  - name: abuild
-    temp: {}
-  - name: apk-keys
-    temp: {}
 
 steps:
   - name: Fetch submodules
     image: alpine/git
     commands:
       - git submodule update --init --recursive
-  - name: Generate abuild key
-    image: alpinelinux/build-base
-    depends_on:
-      - Fetch submodules
-    user: root
-    volumes:
-      - name: abuild
-        path: /root/.abuild
-      - name: apk-keys
-        path: /etc/apk/keys
-    commands:
-      - abuild-keygen -nai
-  - name: Build jamulus apk
-    image: alpinelinux/build-base
-    depends_on:
-      - Generate abuild key
-    user: root
-    volumes:
-      - name: abuild
-        path: /root/.abuild
-      - name: apk-keys
-        path: /etc/apk/keys
-    commands:
-      - echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-      - apk update
-      - cd apkbuilds/packages/jamulus
-      - abuild -FrP $${DRONE_WORKSPACE}/repo
-  - name: Build cbix/jamulus on push
+  - name: Build cbix/jamulus
     image: plugins/docker
     depends_on:
-      - Build jamulus apk
+      - Fetch submodules
     settings:
       repo: cbix/jamulus
       tags: latest-amd64
@@ -66,7 +32,7 @@ steps:
   - name: Build cbix/jamulus on PR
     image: plugins/docker
     depends_on:
-      - Build jamulus apk
+      - Fetch submodules
     settings:
       repo: cbix/jamulus
       tags: latest-amd64
@@ -75,23 +41,10 @@ steps:
     when:
       event:
         - pull_request
-  - name: Build ninjam apk
-    image: alpinelinux/build-base
-    depends_on:
-      - Generate abuild key
-    user: root
-    volumes:
-      - name: abuild
-        path: /root/.abuild
-      - name: apk-keys
-        path: /etc/apk/keys
-    commands:
-      - cd apkbuilds/packages/ninjam-server
-      - abuild -FrP $${DRONE_WORKSPACE}/repo
-  - name: Build cbix/ninjam on push
+  - name: Build cbix/ninjam
     image: plugins/docker
     depends_on:
-      - Build ninjam apk
+      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest-amd64
@@ -105,7 +58,7 @@ steps:
   - name: Build cbix/ninjam on PR
     image: plugins/docker
     depends_on:
-      - Build ninjam apk
+      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest-amd64
@@ -137,50 +90,16 @@ platform:
 
 environment:
   DOCKER_BUILDKIT: 1
-  MAKEFLAGS: "-j4"
-
-volumes:
-  - name: abuild
-    temp: {}
-  - name: apk-keys
-    temp: {}
 
 steps:
   - name: Fetch submodules
     image: alpine/git
     commands:
       - git submodule update --init --recursive
-  - name: Generate abuild key
-    image: alpinelinux/build-base
-    depends_on:
-      - Fetch submodules
-    user: root
-    volumes:
-      - name: abuild
-        path: /root/.abuild
-      - name: apk-keys
-        path: /etc/apk/keys
-    commands:
-      - abuild-keygen -nai
-  - name: Build jamulus apk
-    image: alpinelinux/build-base
-    depends_on:
-      - Generate abuild key
-    user: root
-    volumes:
-      - name: abuild
-        path: /root/.abuild
-      - name: apk-keys
-        path: /etc/apk/keys
-    commands:
-      - echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-      - apk update
-      - cd apkbuilds/packages/jamulus
-      - abuild -FrP $${DRONE_WORKSPACE}/repo
-  - name: Build cbix/jamulus on push
+  - name: Build cbix/jamulus
     image: plugins/docker
     depends_on:
-      - Build jamulus apk
+      - Fetch submodules
     settings:
       repo: cbix/jamulus
       tags: latest-arm64
@@ -194,7 +113,7 @@ steps:
   - name: Build cbix/jamulus on PR
     image: plugins/docker
     depends_on:
-      - Build jamulus apk
+      - Fetch submodules
     settings:
       repo: cbix/jamulus
       tags: latest-arm64
@@ -203,23 +122,10 @@ steps:
     when:
       event:
         - pull_request
-  - name: Build ninjam apk
-    image: alpinelinux/build-base
-    depends_on:
-      - Generate abuild key
-    user: root
-    volumes:
-      - name: abuild
-        path: /root/.abuild
-      - name: apk-keys
-        path: /etc/apk/keys
-    commands:
-      - cd apkbuilds/packages/ninjam-server
-      - abuild -FrP $${DRONE_WORKSPACE}/repo
-  - name: Build cbix/ninjam on push
+  - name: Build cbix/ninjam
     image: plugins/docker
     depends_on:
-      - Build ninjam apk
+      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest-arm64
@@ -233,7 +139,7 @@ steps:
   - name: Build cbix/ninjam on PR
     image: plugins/docker
     depends_on:
-      - Build ninjam apk
+      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest-arm64
