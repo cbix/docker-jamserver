@@ -1,7 +1,7 @@
 FROM alpinelinux/build-base AS builder
 RUN abuild-keygen -nai
-ADD --chown=buildozer https://github.com/cbix/apkbuilds.git#:cbix-alpine /cbix-alpine
-RUN find /cbix-alpine; cd /cbix-alpine/ninjam-server; abuild -rP /tmp
+ADD --chown=buildozer https://github.com/cbix/apkbuilds.git /apkbuilds
+RUN find /apkbuilds; cd /apkbuilds/cbix-alpine/ninjam-server; abuild -rP /tmp
 
 FROM alpine
 RUN --mount=from=builder,source=/tmp/cbix-alpine,target=/repo \
