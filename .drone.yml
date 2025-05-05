@@ -13,6 +13,8 @@ environment:
 steps:
   - name: Build cbix/jamulus
     image: plugins/docker
+    depends_on:
+      - clone
     settings:
       repo: cbix/jamulus
       tags: latest-amd64
@@ -26,6 +28,8 @@ steps:
           - pull_request
   - name: Build cbix/jamulus on PR
     image: plugins/docker
+    depends_on:
+      - clone
     settings:
       repo: cbix/jamulus
       tags: latest-amd64
@@ -36,6 +40,8 @@ steps:
         - pull_request
   - name: Build cbix/ninjam
     image: plugins/docker
+    depends_on:
+      - clone
     settings:
       repo: cbix/ninjam
       tags: latest-amd64
@@ -49,6 +55,8 @@ steps:
           - pull_request
   - name: Build cbix/ninjam on PR
     image: plugins/docker
+    depends_on:
+      - clone
     settings:
       repo: cbix/ninjam
       tags: latest-amd64
@@ -84,6 +92,8 @@ environment:
 steps:
   - name: Build cbix/jamulus
     image: plugins/docker
+    depends_on:
+      - clone
     settings:
       repo: cbix/jamulus
       tags: latest-arm64
@@ -97,6 +107,8 @@ steps:
           - pull_request
   - name: Build cbix/jamulus on PR
     image: plugins/docker
+    depends_on:
+      - clone
     settings:
       repo: cbix/jamulus
       tags: latest-arm64
@@ -107,6 +119,8 @@ steps:
         - pull_request
   - name: Build cbix/ninjam
     image: plugins/docker
+    depends_on:
+      - clone
     settings:
       repo: cbix/ninjam
       tags: latest-arm64
@@ -120,6 +134,8 @@ steps:
           - pull_request
   - name: Build cbix/ninjam on PR
     image: plugins/docker
+    depends_on:
+      - clone
     settings:
       repo: cbix/ninjam
       tags: latest-arm64
@@ -155,6 +171,8 @@ depends_on:
 steps:
   - name: cbix/jamulus manifest
     image: plugins/manifest
+    depends_on:
+      - clone
     settings:
       target: cbix/jamulus:latest
       template: cbix/jamulus:latest-ARCH
@@ -167,6 +185,8 @@ steps:
         from_secret: docker-pass
   - name: cbix/ninjam manifest
     image: plugins/manifest
+    depends_on:
+      - clone
     settings:
       target: cbix/ninjam:latest
       template: cbix/ninjam:latest-ARCH
