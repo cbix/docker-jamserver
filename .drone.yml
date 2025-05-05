@@ -43,8 +43,6 @@ steps:
         - pull_request
   - name: Build cbix/ninjam
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest-amd64
@@ -57,8 +55,6 @@ steps:
         - push
   - name: Build cbix/ninjam on PR
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest-amd64
