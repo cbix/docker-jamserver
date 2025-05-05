@@ -15,5 +15,6 @@ services:
     ports:
       - "2049:2049"
     restart: always
+    stop_signal: SIGINT
     volumes:
       - ./ninjam/ninjam.cfg:/etc/ninjam.cfg
