@@ -11,14 +11,8 @@ environment:
   DOCKER_BUILDKIT: 1
 
 steps:
-  - name: Fetch submodules
-    image: alpine/git
-    commands:
-      - git submodule update --init --recursive
   - name: Build cbix/jamulus
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/jamulus
       tags: latest-amd64
@@ -32,8 +26,6 @@ steps:
           - pull_request
   - name: Build cbix/jamulus on PR
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/jamulus
       tags: latest-amd64
@@ -90,14 +82,8 @@ environment:
   DOCKER_BUILDKIT: 1
 
 steps:
-  - name: Fetch submodules
-    image: alpine/git
-    commands:
-      - git submodule update --init --recursive
   - name: Build cbix/jamulus
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/jamulus
       tags: latest-arm64
@@ -111,8 +97,6 @@ steps:
           - pull_request
   - name: Build cbix/jamulus on PR
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/jamulus
       tags: latest-arm64
@@ -123,8 +107,6 @@ steps:
         - pull_request
   - name: Build cbix/ninjam
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest-arm64
@@ -138,8 +120,6 @@ steps:
           - pull_request
   - name: Build cbix/ninjam on PR
     image: plugins/docker
-    depends_on:
-      - Fetch submodules
     settings:
       repo: cbix/ninjam
       tags: latest-arm64
