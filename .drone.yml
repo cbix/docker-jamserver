@@ -11,14 +11,10 @@ environment:
   DOCKER_BUILDKIT: 1
 
 steps:
-  - name: Fetch submodules
-    image: alpine/git
-    commands:
-      - git submodule update --init --recursive
   - name: Build cbix/jamulus
     image: plugins/docker
     depends_on:
-      - Fetch submodules
+      - clone
     settings:
       repo: cbix/jamulus
       tags: latest-amd64
@@ -33,7 +29,7 @@ steps:
   - name: Build cbix/jamulus on PR
     image: plugins/docker
     depends_on:
-      - Fetch submodules
+      - clone
     settings:
       repo: cbix/jamulus
       tags: latest-amd64
@@ -45,7 +41,7 @@ steps:
   - name: Build cbix/ninjam
     image: plugins/docker
     depends_on:
-      - Fetch submodules
+      - clone
     settings:
       repo: cbix/ninjam
       tags: latest-amd64
@@ -60,7 +56,7 @@ steps:
   - name: Build cbix/ninjam on PR
     image: plugins/docker
     depends_on:
-      - Fetch submodules
+      - clone
     settings:
       repo: cbix/ninjam
       tags: latest-amd64
@@ -94,14 +90,10 @@ environment:
   DOCKER_BUILDKIT: 1
 
 steps:
-  - name: Fetch submodules
-    image: alpine/git
-    commands:
-      - git submodule update --init --recursive
   - name: Build cbix/jamulus
     image: plugins/docker
     depends_on:
-      - Fetch submodules
+      - clone
     settings:
       repo: cbix/jamulus
       tags: latest-arm64
@@ -116,7 +108,7 @@ steps:
   - name: Build cbix/jamulus on PR
     image: plugins/docker
     depends_on:
-      - Fetch submodules
+      - clone
     settings:
       repo: cbix/jamulus
       tags: latest-arm64
@@ -128,7 +120,7 @@ steps:
   - name: Build cbix/ninjam
     image: plugins/docker
     depends_on:
-      - Fetch submodules
+      - clone
     settings:
       repo: cbix/ninjam
       tags: latest-arm64
@@ -143,7 +135,7 @@ steps:
   - name: Build cbix/ninjam on PR
     image: plugins/docker
     depends_on:
-      - Fetch submodules
+      - clone
     settings:
       repo: cbix/ninjam
       tags: latest-arm64
@@ -179,6 +171,8 @@ depends_on:
 steps:
   - name: cbix/jamulus manifest
     image: plugins/manifest
+    depends_on:
+      - clone
     settings:
       target: cbix/jamulus:latest
       template: cbix/jamulus:latest-ARCH
@@ -191,6 +185,8 @@ steps:
         from_secret: docker-pass
   - name: cbix/ninjam manifest
     image: plugins/manifest
+    depends_on:
+      - clone
     settings:
       target: cbix/ninjam:latest
       template: cbix/ninjam:latest-ARCH
